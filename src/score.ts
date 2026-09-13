@@ -1,4 +1,4 @@
-export const SCORE_VERSION = 'ARAGON-FGR · especificación local · v0.1';
+export const SCORE_VERSION = 'ARAGON-FGR · extensión experimental con tabaquismo · v0.2';
 export const factors = [
   { id: 'aborto', label: 'Antecedente de aborto', points: 3 },
   { id: 'rciu', label: 'RCIU previo', points: 2 },
@@ -15,4 +15,9 @@ export function calculateScore(ids: readonly string[]) {
   const total = factors.reduce((sum, f) => sum + (ids.includes(f.id) ? f.points : 0), 0);
   const level = total < 3 ? 'low' : total < 6 ? 'moderate' : 'high';
   return { total, probability: probabilities[total], level, label: level === 'low' ? 'Riesgo bajo' : level === 'moderate' ? 'Riesgo moderado' : 'Riesgo alto', tableClassification: total >= 10 ? 'Muy alto' : null };
+}
+
+export function calculateExtendedScore(ids: readonly string[], smoking: boolean) {
+  const original = calculateScore(ids);
+  return { original, smokingPoints: smoking ? 1 : 0, total: original.total + (smoking ? 1 : 0), maximum: 14 };
 }

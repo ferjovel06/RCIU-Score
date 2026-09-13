@@ -1,4 +1,4 @@
-import { calculateScore, factors, type FactorId } from './score';
+import { calculateExtendedScore, factors, type FactorId } from './score';
 type Registry = { registerTool: (tool: object, options: { signal: AbortSignal }) => void | Promise<void> };
 export function registerCalculatorTool(setFactors: (ids: FactorId[], smoking: boolean) => void) {
   const context = (document as Document & { modelContext?: Registry }).modelContext;
@@ -15,9 +15,9 @@ export function registerCalculatorTool(setFactors: (ids: FactorId[], smoking: bo
         const value = input as Record<string,unknown>;
         if (Object.keys(value).some(k => !['factors','smoking'].includes(k)) || !Array.isArray(value.factors) || value.factors.some(id => typeof id !== 'string') || typeof value.smoking !== 'boolean') throw new Error('Factores o tabaquismo inválidos');
         if (new Set(value.factors).size !== value.factors.length) throw new Error('Factores duplicados');
-        const result = calculateScore(value.factors);
+        const result = calculateExtendedScore(value.factors, value.smoking);
         setFactors(value.factors as FactorId[], value.smoking);
-        return {...result, smoking: value.smoking, probabilitySource: 'Approximate document table; not a validated individual estimate'};
+        return {...result, smoking: value.smoking, probabilitySource: 'Probability and risk category apply only to original score, excluding smoking; extended total has no established probability or risk thresholds'};
       },
     }, {signal:lifecycle.signal})).catch(() => {});
   } catch { /* Ordinary browsers may not support this experimental registry. */ }

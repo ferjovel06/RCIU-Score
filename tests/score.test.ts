@@ -30,3 +30,22 @@ test('duplicate factors cannot inflate the score', () => assert.equal(calculateS
 test('unknown factors including smoking cannot enter the core score', () => {
   assert.throws(() => calculateScore(['smoking']), /no reconocido/);
 });
+import { calculateExtendedScore } from '../src/score.ts';
+test('all 256 selections add smoking exactly once and preserve original estimates', () => {
+  for (let mask = 0; mask < 128; mask++) {
+    const present = clinicalCases.filter((_, index) => mask & (1 << index));
+    const ids = present.map(([id]) => id);
+    const expected = present.reduce((sum, [, weight]) => sum + weight, 0);
+    for (const smoking of [false, true]) {
+      const result = calculateExtendedScore(ids, smoking);
+      assert.equal(result.total, expected + Number(smoking));
+      assert.equal(result.maximum, 14);
+      assert.equal(result.smokingPoints, Number(smoking));
+      assert.deepEqual(result.original, calculateScore(ids));
+      assert.ok(result.total >= 0 && result.total <= 14);
+    }
+  }
+  assert.equal(calculateExtendedScore([], true).total, 1);
+  assert.equal(calculateExtendedScore(clinicalCases.map(([id]) => id), true).total, 14);
+  assert.equal(calculateExtendedScore([], false).total, 0);
+});
