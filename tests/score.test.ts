@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateScore } from '../src/score.ts';
+import { calculateScore, scoreToGraphicY } from '../src/score.ts';
 
 const clinicalCases = [
   ['aborto', 3], ['rciu', 2], ['cesarea', 1], ['saf', 3], ['lupus', 1], ['preeclampsia', 2], ['neumopatia', 1],
@@ -48,4 +48,12 @@ test('all 256 selections add smoking exactly once and preserve original estimate
   assert.equal(calculateExtendedScore([], true).total, 1);
   assert.equal(calculateExtendedScore(clinicalCases.map(([id]) => id), true).total, 14);
   assert.equal(calculateExtendedScore([], false).total, 0);
+});
+test('graphic marker moves continuously from p90 to p10 as the extended score rises', () => {
+  assert.equal(scoreToGraphicY(0), 59);
+  assert.equal(scoreToGraphicY(7), 108.5);
+  assert.equal(scoreToGraphicY(14), 158);
+  for (let score = 1; score <= 14; score++) assert.ok(scoreToGraphicY(score) > scoreToGraphicY(score - 1));
+  assert.throws(() => scoreToGraphicY(-1), /fuera de rango/);
+  assert.throws(() => scoreToGraphicY(15), /fuera de rango/);
 });

@@ -1,30 +1,24 @@
+import { scoreToGraphicY } from './score';
+
 export function GrowthGraphic({ total, original, smokingPoints }: { total: number; original: number; smokingPoints: number }) {
-  const x = (value: number) => 32 + value / 14 * 476;
+  const markerY = scoreToGraphicY(total);
   return <figure className="growth-graphic">
-    <h2>Puntaje en tiempo real</h2>
-    <svg viewBox="0 0 560 228" role="img" aria-labelledby="growth-title growth-description">
-      <title id="growth-title">Puntaje ampliado: {total} de 14 puntos</title>
-      <desc id="growth-description">Score original {original} puntos más {smokingPoints} punto por tabaquismo. El marcador muestra el total actual en una escala de 0 a 14; no representa crecimiento fetal ni probabilidad.</desc>
-      <g stroke="#e1dce8" strokeWidth="1">
-        {[0,2,4,6,8,10,12,14].map(n => <line key={n} x1={x(n)} x2={x(n)} y1="44" y2="166" strokeDasharray="3 5" />)}
+    <svg viewBox="0 0 560 210" role="img" aria-labelledby="growth-title growth-description">
+      <title id="growth-title">Trayectoria conceptual para un puntaje de {total} sobre 14</title>
+      <desc id="growth-description">Tres curvas conceptuales etiquetadas p90, p50 y p10. El marcador verde se desplaza desde p90 hacia p10 a medida que aumenta el puntaje calculado.</desc>
+      <g fill="none" strokeWidth="2" strokeLinecap="round">
+        <path d="M24 184H508" stroke="#e1dce8" />
+        <path d="M24 36C175 41 316 61 508 61" stroke="#d6cfdf" />
+        <path d="M24 77C180 88 323 112 508 113" stroke="#afa2c1" />
+        <path d="M24 118C180 137 323 164 508 166" stroke="#d6cfdf" />
+        <path d="M400 23V184" stroke="#d8d2df" strokeDasharray="3 5" strokeWidth="1.5" />
       </g>
-      <g fill="none" strokeLinecap="round" strokeWidth="8">
-        <path d="M32 78H508" stroke="#eeeaf2" />
-        {original > 0 && <path d={`M32 78H${x(original)}`} stroke="#afa2c1" />}
-        {smokingPoints > 0 && <path d={`M${x(original)} 78H${x(total)}`} stroke="#ae8a37" />}
-        <path d="M32 148H508" stroke="#eeeaf2" strokeWidth="3" />
-        {original > 0 && <path d={`M32 148H${x(original)}`} stroke="#afa2c1" strokeWidth="3" />}
+      <g fill="#83758f" fontSize="14" fontFamily="system-ui, sans-serif">
+        <text x="514" y="66">p90</text><text x="514" y="118">p50</text><text x="514" y="171">p10</text>
       </g>
-      <line x1={x(total)} x2={x(total)} y1="58" y2="166" stroke="#2d7460" strokeDasharray="3 5" />
-      <circle cx={x(total)} cy="78" r="9" fill="#2d7460" stroke="white" strokeWidth="3" />
-      <circle cx={x(original)} cy="148" r="5" fill="#afa2c1" />
-      <g fontFamily="system-ui, sans-serif" fontSize="16" fill="#6c6678">
-        <text x="32" y="30">Total ampliado</text><text x="508" y="30" textAnchor="end" fill="#2d7460" fontWeight="700">{total} / 14</text>
-        <text x="32" y="121">Score original</text><text x="508" y="121" textAnchor="end">{original} / 13</text>
-        {[0,2,4,6,8,10,12,14].map(n => <text key={n} x={x(n)} y="192" textAnchor="middle">{n}</text>)}
-        <text x="270" y="222" textAnchor="middle">Puntos</text>
-      </g>
+      <circle className="score-marker" cx="400" cy={markerY} r="8" fill="#2d7460" stroke="white" strokeWidth="3" />
     </svg>
-    <figcaption>{original} puntos del score original + {smokingPoints} por tabaquismo = <strong>{total} puntos</strong>. Extensión experimental; la gráfica muestra puntos, no percentiles de crecimiento.</figcaption>
+    <figcaption>Ilustración conceptual de trayectoria de crecimiento — marcador dinámico según el puntaje ({total}/14). No representa percentiles reales de una paciente individual.</figcaption>
+    <span className="graphic-calculation" aria-hidden="true">Score original {original}/13 {smokingPoints ? '+ tabaquismo 1' : '+ tabaquismo 0'} = {total}/14</span>
   </figure>;
 }

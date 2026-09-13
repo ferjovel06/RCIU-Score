@@ -21,6 +21,6 @@ Authoritative files remain in the parent project's `docs` directory; they are no
 3. Source says “Preeclampsia”; the screenshot says “Preeclampsia previa”. The source label is retained, with an explanatory note. The timing definition requires clarification before clinical use.
 4. Active maternal smoking adds 1 point to a user-requested experimental extended total (0–14). Original score (0–13), probability and risk category remain explicitly separate. No probability or risk category is inferred for the extended model.
 5. Zero points is low risk under the table, never “no risk”. No treatment or surveillance advice is generated.
-6. The graphic updates from the extended total, original score and smoking contribution. Both tracks use the same 0–14 point axis, without growth percentile claims.
+6. The graphic reproduces the three conceptual p90/p50/p10 curves from the reference. Its green marker moves continuously from the p90 area toward p10 as the extended 0–14 score increases. This is a score visualization, not a calculated fetal percentile.
 
 Software verification does not constitute validation of the clinical model. The original research datasets are not read, copied or published by this app.

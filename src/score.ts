@@ -21,3 +21,8 @@ export function calculateExtendedScore(ids: readonly string[], smoking: boolean)
   const original = calculateScore(ids);
   return { original, smokingPoints: smoking ? 1 : 0, total: original.total + (smoking ? 1 : 0), maximum: 14 };
 }
+
+export function scoreToGraphicY(total: number) {
+  if (!Number.isFinite(total) || total < 0 || total > 14) throw new Error('Puntaje fuera de rango');
+  return 59 + (total / 14) * 99;
+}
