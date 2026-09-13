@@ -21,6 +21,6 @@ Authoritative files remain in the parent project's `docs` directory; they are no
 3. Source says “Preeclampsia”; the screenshot says “Preeclampsia previa”. The source label is retained, with an explanatory note. The timing definition requires clarification before clinical use.
 4. Smoking is an unscored contextual selection from the screenshot. It never changes the 0–13 score or probability. The unverified literature odds ratio from the screenshot is not republished.
 5. Zero points is low risk under the table, never “no risk”. No treatment or surveillance advice is generated.
-6. The screenshot's conceptual growth graphic is replaced by actual score ranges to avoid implying patient-specific growth data.
+6. The screenshot's conceptual growth graphic is displayed above the result, with fixed p90/p50/p10 curves and a fixed illustrative marker. Its caption clarifies that it is not patient-specific and is not calculated from the score.
 
 Software verification does not constitute validation of the clinical model. The original research datasets are not read, copied or published by this app.
