@@ -1,7 +1,14 @@
-import { scoreToGraphicY } from './score';
+import { scoreToGraphicY } from '../score';
 
-export function GrowthGraphic({ total, original, smokingPoints }: { total: number; original: number; smokingPoints: number }) {
+interface GrowthGraphicProps {
+  total: number;
+  original: number;
+  smokingPoints: number;
+}
+
+export function GrowthGraphic({ total, original, smokingPoints }: GrowthGraphicProps) {
   const markerY = scoreToGraphicY(total);
+
   return <figure className="growth-graphic">
     <svg viewBox="0 0 560 210" role="img" aria-labelledby="growth-title growth-description">
       <title id="growth-title">Trayectoria conceptual para un puntaje de {total} sobre 14</title>
@@ -14,7 +21,9 @@ export function GrowthGraphic({ total, original, smokingPoints }: { total: numbe
         <path d="M400 23V184" stroke="#d8d2df" strokeDasharray="3 5" strokeWidth="1.5" />
       </g>
       <g fill="#83758f" fontSize="14" fontFamily="system-ui, sans-serif">
-        <text x="514" y="66">p90</text><text x="514" y="118">p50</text><text x="514" y="171">p10</text>
+        <text x="514" y="66">p90</text>
+        <text x="514" y="118">p50</text>
+        <text x="514" y="171">p10</text>
       </g>
       <circle className="score-marker" cx="400" cy={markerY} r="8" fill="#2d7460" stroke="white" strokeWidth="3" />
     </svg>
