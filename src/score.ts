@@ -1,4 +1,6 @@
 export const SCORE_VERSION = 'ARAGON-FGR · extensión experimental con tabaquismo · v0.2';
+export const SCORE_MODEL_CODE = 'ARAGON_FGR';
+export const SCORE_MODEL_VERSION = '0.2';
 export const factors = [
   { id: 'aborto', label: 'Antecedente de aborto', points: 3 },
   { id: 'rciu', label: 'RCIU previo', points: 2 },

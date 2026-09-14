@@ -1,0 +1,2 @@
+-- Required scoring reference data is installed by versioned migrations.
+-- Keep this file free of real or identifiable assessment data.
