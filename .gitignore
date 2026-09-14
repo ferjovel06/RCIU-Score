@@ -28,3 +28,7 @@ node_modules/
 dist/
 *.tsbuildinfo
 .vite/
+
+# Supabase CLI state
+supabase/.temp/
+supabase/.branches/
