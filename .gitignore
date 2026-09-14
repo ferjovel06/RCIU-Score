@@ -23,10 +23,8 @@ desktop.ini
 .idea/
 .vscode/
 
-# Agents 
-.openai/
-
 # Node modules
 node_modules/
 dist/
-tsconfig.tsbuildinfo
+*.tsbuildinfo
+.vite/
