@@ -1,42 +1,85 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildAssessmentSubmission } from '../src/models/assessment.ts';
+import type { AssessmentAnswers } from '../src/features/calculator/types/assessment.types.ts';
+import { buildAssessmentSubmission } from '../src/features/calculator/utils/buildAssessmentSubmission.ts';
+import { parseAssessmentResult } from '../src/features/calculator/utils/parseAssessmentResult.ts';
+import { scoreModel } from './fixtures/scoreModel.ts';
 
-test('builds a complete, versioned submission without client-calculated results', () => {
+const answers: AssessmentAnswers = {
+  aborto: 'yes',
+  rciu: 'no',
+  cesarea: 'unknown',
+  saf: 'no',
+  lupus: 'no',
+  preeclampsia: 'yes',
+  neumopatia: 'unknown',
+  smoking: 'yes',
+};
+
+test('builds a complete submission without client-calculated results', () => {
   const submission = buildAssessmentSubmission({
-    selected: ['aborto', 'preeclampsia'],
-    smoking: true,
-    assessmentId: '018f47de-6d6a-7d22-a95a-aea4e7c02011',
-    clientCreatedAt: '2026-09-13T12:00:00.000Z',
+    model: scoreModel,
+    answers,
+    assessmentId: 'assessment-id',
+    clientCreatedAt: '2026-09-14T00:00:00.000Z',
   });
 
+  assert.equal(submission.assessmentId, 'assessment-id');
+  assert.equal(submission.modelId, scoreModel.id);
   assert.equal(submission.modelCode, 'ARAGON_FGR');
   assert.equal(submission.modelVersion, '0.2');
+  assert.equal(
+    submission.definitionChecksum,
+    scoreModel.definitionChecksum,
+  );
   assert.equal(submission.answers.length, 8);
-  assert.deepEqual(submission.answers.map(answer => answer.factorCode), [
-    'aborto',
-    'rciu',
-    'cesarea',
-    'saf',
-    'lupus',
-    'preeclampsia',
-    'neumopatia',
-    'smoking',
-  ]);
-  assert.equal(submission.answers.find(answer => answer.factorCode === 'aborto')?.response, 'yes');
-  assert.equal(submission.answers.find(answer => answer.factorCode === 'rciu')?.response, 'no');
-  assert.equal(submission.answers.find(answer => answer.factorCode === 'smoking')?.response, 'yes');
   assert.equal('result' in submission, false);
   assert.equal('total' in submission, false);
 });
 
-test('duplicate selected factors still produce one answer per factor', () => {
+test('serializes one answer per factor in model order', () => {
   const submission = buildAssessmentSubmission({
-    selected: ['aborto', 'aborto'],
-    smoking: false,
-    assessmentId: '018f47de-6d6a-7d22-a95a-aea4e7c02012',
+    model: scoreModel,
+    answers,
   });
 
-  assert.equal(submission.answers.filter(answer => answer.factorCode === 'aborto').length, 1);
-  assert.equal(submission.answers.find(answer => answer.factorCode === 'smoking')?.response, 'no');
+  assert.deepEqual(
+    submission.answers.map(answer => answer.factorCode),
+    scoreModel.factors.map(factor => factor.code),
+  );
+  assert.equal(
+    submission.answers.find(answer => answer.factorCode === 'aborto')
+      ?.response,
+    'yes',
+  );
+  assert.equal(
+    submission.answers.find(answer => answer.factorCode === 'smoking')
+      ?.response,
+    'yes',
+  );
+});
+
+test('validates the authoritative assessment result response', () => {
+  const result = parseAssessmentResult({
+    assessmentId: 'assessment-id',
+    originalTotal: 5,
+    additionalTotal: 1,
+    extendedTotal: 6,
+    originalRiskLevel: 'moderate',
+    originalRiskLabel: 'Riesgo moderado',
+    originalProbabilityLabel: '~30 %',
+    tableClassification: null,
+    calculatedAt: '2026-09-14T00:00:00.000Z',
+  });
+
+  assert.equal(result.extendedTotal, 6);
+  assert.equal(result.tableClassification, null);
+
+  assert.throws(
+    () => parseAssessmentResult({
+      ...result,
+      originalTotal: '5',
+    }),
+    /originalTotal must be an integer/,
+  );
 });

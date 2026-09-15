@@ -2,6 +2,11 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
   plugins: [VitePWA({
     registerType: 'prompt',
     includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],
