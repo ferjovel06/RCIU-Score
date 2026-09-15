@@ -21,13 +21,19 @@ desktop.ini
 
 # Editor-specific files
 .idea/
-.vscode/
+.vscode/*
 
 # Node modules
 node_modules/
 dist/
+dev-dist/
 *.tsbuildinfo
 .vite/
+
+# Cloudflare Wrangler local state and secrets
+.wrangler/
+.dev.vars
+.dev.vars.*
 
 # Supabase CLI state
 supabase/.temp/
